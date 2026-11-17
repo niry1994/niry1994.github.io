@@ -1,9 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import {
+  translate,
+  usePortfolioPreferences,
+} from "@/components/portfolio/portfolio-preferences";
 
 export function ContactForm() {
   const [notice, setNotice] = useState("");
+  const { language } = usePortfolioPreferences();
+  const t = (text: string) => translate(text, language);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,22 +26,24 @@ export function ContactForm() {
       typeof service !== "string" ||
       typeof message !== "string"
     ) {
-      setNotice("Merci de vérifier les informations saisies.");
+      setNotice(t("Merci de vérifier les informations saisies."));
       return;
     }
 
-    const subject = `Prise de contact — ${service}`;
+    const subject = `${t("Prise de contact")} — ${t(service)}`;
     const body = [
-      `Bonjour Vavaka,`,
+      t("Bonjour Vavaka,"),
       "",
       message.trim(),
       "",
-      `Nom : ${name.trim()}`,
-      `E-mail : ${email.trim()}`,
+      `${t("Nom :")} ${name.trim()}`,
+      `${t("E-mail :")} ${email.trim()}`,
     ].join("\n");
     const mailto = `mailto:nirizo1994@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    setNotice("Votre application de messagerie va s’ouvrir avec votre message.");
+    setNotice(
+      t("Votre application de messagerie va s’ouvrir avec votre message."),
+    );
     window.location.href = mailto;
   }
 
@@ -43,48 +51,55 @@ export function ContactForm() {
     <form className="portfolio-form" onSubmit={handleSubmit}>
       <div className="portfolio-form-row">
         <label>
-          Votre nom
-          <input autoComplete="name" name="name" placeholder="Nom et prénom" required />
+          {t("Votre nom")}
+          <input
+            autoComplete="name"
+            name="name"
+            placeholder={t("Nom et prénom")}
+            required
+          />
         </label>
         <label>
-          Votre e-mail
+          {t("Votre e-mail")}
           <input
             autoComplete="email"
             name="email"
-            placeholder="vous@exemple.com"
+            placeholder={t("vous@exemple.com")}
             required
             type="email"
           />
         </label>
       </div>
       <label>
-        Sujet
+        {t("Sujet")}
         <select defaultValue="" name="service" required>
           <option disabled value="">
-            Choisissez un sujet
+            {t("Choisissez un sujet")}
           </option>
-          <option>Création de boutique Shopify</option>
-          <option>Assistance digitale</option>
-          <option>Développement web</option>
-          <option>Autre demande</option>
+          <option>{t("Création de boutique Shopify")}</option>
+          <option>{t("Assistance digitale")}</option>
+          <option>{t("Développement web")}</option>
+          <option>{t("Autre demande")}</option>
         </select>
       </label>
       <label>
-        Votre message
+        {t("Votre message")}
         <textarea
           maxLength={2000}
           name="message"
-          placeholder="Parlez-moi brièvement de votre projet..."
+          placeholder={t("Parlez-moi brièvement de votre projet...")}
           required
           rows={4}
         />
       </label>
       <button className="portfolio-button portfolio-button-primary" type="submit">
-        Préparer mon e-mail <span aria-hidden="true">↗</span>
+        {t("Préparer mon e-mail")} <span aria-hidden="true">↗</span>
       </button>
       <p className="portfolio-form-note" aria-live="polite">
         {notice ||
-          "Ce formulaire ouvre votre application e-mail ; vos informations ne sont pas enregistrées sur ce site."}
+          t(
+            "Ce formulaire ouvre votre application e-mail ; vos informations ne sont pas enregistrées sur ce site.",
+          )}
       </p>
     </form>
   );
